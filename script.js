@@ -85,3 +85,10 @@ function showSuccess(message) {
         }, 500);
     }, 3000);
 }
+
+document.getElementById("registrationForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    alert("Form submitted successfully!");
+    window.location.href = "success.html";
+});
+
