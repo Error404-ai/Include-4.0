@@ -38,7 +38,7 @@ document.getElementById("registrationForm").addEventListener("submit", async fun
         registered_for: registeredFor
     };
 
-    const apiUrl = "http://13.200.54.180/api/register/";
+    const apiUrl = "https://13.200.54.180/api/register/";
 
     try {
         const response = await fetch(apiUrl, {
