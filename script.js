@@ -2,17 +2,19 @@ document.getElementById("registrationForm").addEventListener("submit", async fun
     event.preventDefault();
 
     const fullName = document.getElementById("fullName").value.trim();
-    const branch = document.getElementById("branch").value;
-    const studentNumber = document.getElementById("studentNumber").value.trim();
-    const hackerRank = document.getElementById("hackerRank").value.trim();
     const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const year = document.getElementById("year").value;
+    const branch = document.getElementById("branch").value;
     const gender = document.getElementById("gender").value;
     const hosteller = document.getElementById("hosteller").value;
-    const rollNumber = document.getElementById("rollNumber").value.trim();
+    const hackerRank = document.getElementById("hackerRank").value.trim();
+    const studentNumber = document.getElementById("studentNumber").value.trim();
+    const registeredFor = document.getElementById("registeredFor").value;
 
     let errorMessage = "";
 
-    if (!fullName || !branch || !studentNumber || !hackerRank || !email || !gender || !hosteller || !rollNumber) {
+    if (!fullName || !email || !phone || !year || !branch || !gender || !hosteller || !hackerRank || !studentNumber || !registeredFor) {
         errorMessage = "⚠ Please fill in all fields.";
     } else if (!/^\S+@\S+\.\S+$/.test(email)) {
         errorMessage = "⚠ Enter a valid email address.";
@@ -25,14 +27,15 @@ document.getElementById("registrationForm").addEventListener("submit", async fun
 
     const requestBody = {
         name: fullName,
-        branch_name: branch,
-        recaptcha_token: "abc",
-        student_no: studentNumber,
-        hackerrank: hackerRank,
         email: email,
+        phone: phone,
+        year: year,
+        branch_name: branch,
         gender: gender,
         hosteller: hosteller,
-        roll_no: rollNumber
+        hackerrank: hackerRank,
+        student_no: studentNumber,
+        registered_for: registeredFor
     };
 
     const apiUrl = "https://api.programming-club.tech/api/register";
@@ -47,11 +50,12 @@ document.getElementById("registrationForm").addEventListener("submit", async fun
         });
 
         const result = await response.json();
+        console.log("API Response:", result);
 
         if (response.ok) {
             showSuccess("✅ Registration Successful!");
             setTimeout(() => {
-                window.location.href = "/success.html";
+                window.location.href = "./success.html";
             }, 2000);
         } else {
             showError(result.error || "⚠ Registration failed!");
@@ -100,4 +104,24 @@ function showSuccess(message) {
             successBox.classList.remove("fade-in", "fade-out");
         }, 500);
     }, 3000);
+}
+
+// ✅ **Dynamically update 'Registered For' options based on year selection**
+document.addEventListener("DOMContentLoaded", function () {
+    updateRegisteredForOptions();
+    document.getElementById("year").addEventListener("change", updateRegisteredForOptions);
+});
+
+function updateRegisteredForOptions() {
+    const year = document.getElementById("year").value;
+    const registeredFor = document.getElementById("registeredFor");
+
+    registeredFor.innerHTML = '<option value="">Select an option</option>';
+
+    if (year === "1st") {
+        registeredFor.innerHTML += '<option value="contest">Contest Only (Free)</option>';
+        registeredFor.innerHTML += '<option value="workshop_contest">Workshop + Contest (Charges)</option>';
+    } else if (year === "2nd") {
+        registeredFor.innerHTML += '<option value="contest">Contest Only (Free)</option>';
+    }
 }
