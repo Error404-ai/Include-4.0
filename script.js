@@ -51,7 +51,7 @@ document.getElementById("registrationForm").addEventListener("submit", async fun
         if (response.ok) {
             showSuccess("✅ Registration Successful!");
             setTimeout(() => {
-                window.location.href = "success.html";
+                window.location.href = "/success.html";
             }, 2000);
         } else {
             showError(result.error || "⚠ Registration failed!");
