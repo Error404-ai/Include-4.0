@@ -1,45 +1,67 @@
-document.getElementById("registrationForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent default form submission
+document.getElementById("registrationForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-    // Get form values
-    const year = document.getElementById("year").value;
     const fullName = document.getElementById("fullName").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const hackerRank = document.getElementById("hackerRank").value.trim();
-    const studentNumber = document.getElementById("studentNumber").value.trim();
     const branch = document.getElementById("branch").value;
+    const studentNumber = document.getElementById("studentNumber").value.trim();
+    const hackerRank = document.getElementById("hackerRank").value.trim();
+    const email = document.getElementById("email").value.trim();
     const gender = document.getElementById("gender").value;
     const hosteller = document.getElementById("hosteller").value;
+    const rollNumber = document.getElementById("rollNumber").value.trim();
 
-    // Error message container
     let errorMessage = "";
 
-    // Validations
-    if (!year || !fullName || !email || !phone || !hackerRank || !studentNumber || !branch || !gender || !hosteller) {
+    if (!fullName || !branch || !studentNumber || !hackerRank || !email || !gender || !hosteller || !rollNumber) {
         errorMessage = "⚠ Please fill in all fields.";
     } else if (!/^\S+@\S+\.\S+$/.test(email)) {
         errorMessage = "⚠ Enter a valid email address.";
-    } else if (!/^\d{10}$/.test(phone)) {
-        errorMessage = "⚠ Enter a valid 10-digit phone number.";
     }
 
-    // If there's an error, display and stop form submission
     if (errorMessage) {
         showError(errorMessage);
         return;
     }
 
-    // Success message with animation
-    showSuccess("✅ Registration Successful!");
+    const requestBody = {
+        name: fullName,
+        branch_name: branch,
+        recaptcha_token: "abc",
+        student_no: studentNumber,
+        hackerrank: hackerRank,
+        email: email,
+        gender: gender,
+        hosteller: hosteller,
+        roll_no: rollNumber
+    };
 
-    // Reset form after 2 seconds
-    setTimeout(() => {
-        document.getElementById("registrationForm").reset();
-    }, 2000);
+    const apiUrl = "https://api.programming-club.tech/api/register";
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showSuccess("✅ Registration Successful!");
+            setTimeout(() => {
+                window.location.href = "success.html";
+            }, 2000);
+        } else {
+            showError(result.error || "⚠ Registration failed!");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        showError("⚠ Something went wrong!");
+    }
 });
 
-// Function to show error message
 function showError(message) {
     let errorBox = document.getElementById("errorBox");
     if (!errorBox) {
@@ -51,10 +73,6 @@ function showError(message) {
     errorBox.style.display = "block";
     errorBox.classList.add("fade-in");
 
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: "smooth" });
-
-    // Hide after 3 seconds
     setTimeout(() => {
         errorBox.classList.add("fade-out");
         setTimeout(() => {
@@ -64,7 +82,6 @@ function showError(message) {
     }, 3000);
 }
 
-// Function to show success message
 function showSuccess(message) {
     let successBox = document.getElementById("successBox");
     if (!successBox) {
@@ -76,7 +93,6 @@ function showSuccess(message) {
     successBox.style.display = "block";
     successBox.classList.add("fade-in");
 
-    // Hide after 3 seconds
     setTimeout(() => {
         successBox.classList.add("fade-out");
         setTimeout(() => {
@@ -85,10 +101,3 @@ function showSuccess(message) {
         }, 500);
     }, 3000);
 }
-
-document.getElementById("registrationForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    alert("Form submitted successfully!");
-    window.location.href = "success.html";
-});
-
