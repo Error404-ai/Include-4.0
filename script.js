@@ -38,7 +38,7 @@ document.getElementById("registrationForm").addEventListener("submit", async fun
         registered_for: registeredFor
     };
 
-    const apiUrl = "https://api.programming-club.tech/api/register";
+    const apiUrl = "https://api.programming-club.tech/api/register/";
 
     try {
         const response = await fetch(apiUrl, {
